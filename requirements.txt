@@ -2,5 +2,5 @@ torch~=1.6.0
 pytorch-lightning~=0.9.0
 numpy~=1.19.2
 sklearn~=0.0
-pdftotext~=2.1.5
-scrapy~=2.3.0
+beautifulsoup4~=4.9.1
+requests~=2.24.0

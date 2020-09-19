@@ -2,15 +2,13 @@
 
 ## Installation
 
-First we need to install `pdftotext` dependencies. 
+First we need to install `pdftotext` command. 
 
 On Debian, Ubuntu & friends:
 
 ```shell script
-sudo apt install build-essential libpoppler-cpp-dev pkg-config python3-dev
-``` 
-
-For other platforms, please follow the official guild [here](https://pypi.org/project/pdftotext/)
+sudo apt install poppler-utils
+```  
 
 Now we can proceed to install pip packages:
 
