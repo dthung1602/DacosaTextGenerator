@@ -3,9 +3,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed, wait
 
 import requests
 from bs4 import BeautifulSoup
+from constants import RAW_DATA_DIR
 
 BASE_URL = "http://tulieuvankien.dangcongsan.vn"
-RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), "data", "raw")
 CONCURRENT_REQUESTS = 8
 ROOT_URLS = [
     {
@@ -49,7 +49,7 @@ def save_pdf(page_url):
     if response.status_code != 200:
         raise Exception(f"Received non-200 response on URL: {pdf_url}")
 
-    filename = pdf_url.split('/')[-1]
+    filename = pdf_url.split('/')[-1].replace("-", " - ").replace("  ", " ")
     print(f"Saving to file {filename}")
     with open(os.path.join(RAW_DATA_DIR, filename), 'wb') as f:
         f.write(response.content)

@@ -1,3 +1,7 @@
+from typing import Sized
+
+from constants import VALID_CHARS
+
 TCVN3 = ["Aµ", "A¸", "¢", "A·", "EÌ", "EÐ", "£", "I×", "IÝ", "Oß",
          "Oã", "¤", "Oâ", "Uï", "Uó", "Yý", "µ", "¸", "©", "·",
          "Ì", "Ð", "ª", "×", "Ý", "ß", "ã", "«", "â", "ï",
@@ -11,7 +15,7 @@ TCVN3 = ["Aµ", "A¸", "¢", "A·", "EÌ", "EÐ", "£", "I×", "IÝ", "Oß",
          "¤é", "é", "¥í", "í", "¥ê", "ê", "¥ë", "ë", "¥ì", "ì",
          "¥î", "î", "Uô", "ô", "Uñ", "ñ", "¦ø", "ø", "¦õ", "õ",
          "¦ö", "ö", "¦÷", "÷", "¦ù", "ù", "Yú", "ú", "Yþ", "þ",
-         "Yû", "û", "Yü", "ü", "."]
+         "Yû", "û", "Yü", "ü", ".", "­"]
 
 UNICODE = ["À", "Á", "Â", "Ã", "È", "É", "Ê", "Ì", "Í", "Ò",
            "Ó", "Ô", "Õ", "Ù", "Ú", "Ý", "à", "á", "â", "ã",
@@ -26,13 +30,21 @@ UNICODE = ["À", "Á", "Â", "Ã", "È", "É", "Ê", "Ì", "Í", "Ò",
            "Ộ", "ộ", "Ớ", "ớ", "Ờ", "ờ", "Ở", "ở", "Ỡ", "ỡ",
            "Ợ", "ợ", "Ụ", "ụ", "Ủ", "ủ", "Ứ", "ứ", "Ừ", "ừ",
            "Ử", "ử", "Ữ", "ữ", "Ự", "ự", "Ỳ", "ỳ", "Ỵ", "ỵ",
-           "Ỷ", "ỷ", "Ỹ", "ỹ", "."]
+           "Ỷ", "ỷ", "Ỹ", "ỹ", ".", "ư"]
 
-INVALID_CHARS = {
+CHARS_TO_REPLACE = {
     "": "",
     " ư ": " - ",
     " ư\n": " -\n",
     "\nư ": "\n- ",
+    "”": "\"",
+    "“": "\"",
+    "_______________": "",
+    "―": "-",
+    "⎯": "-",
+    "…": "...",
+    "`": "",
+    "\t": " ",
 }
 
 
@@ -42,12 +54,24 @@ def tcnv3_to_unicode(str_original: str) -> str:
 
     map_length = len(source_charset)
     for number in range(map_length):
-        str_original = str_original.replace(source_charset[number], "::" + str(number) + "::")
+        str_original = str_original.replace(source_charset[number], f"[::{number}::]")
 
     for number in range(map_length):
-        str_original = str_original.replace("::" + str(number) + "::", target_charset[number])
+        str_original = str_original.replace(f"[::{number}::]", target_charset[number])
 
-    for char, replacement in INVALID_CHARS.items():
+    for char, replacement in CHARS_TO_REPLACE.items():
         str_original = str_original.replace(char, replacement)
 
-    return str_original
+    new_str = ""
+    for char in str_original:
+        if char in VALID_CHARS:
+            new_str += char
+
+    return new_str
+
+
+def chunk(array: Sized, chunk_size: int) -> list:
+    chunk_count = int(len(array) / chunk_size) + 1
+    return [
+        array[i * chunk_size: i + chunk_size] for i in range(chunk_count)
+    ]
