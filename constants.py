@@ -3,11 +3,16 @@ from enum import Enum
 
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), "data", "raw")
 PROCESSED_DATA_DIR = os.path.join(os.path.dirname(__file__), "data", "processed")
-VALID_CHARS = " \n!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" \
+
+CHAR_VOCABULARY = " \n!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" \
               "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộ" \
               "ỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ–"
-CHAR_MAPPING = {c: i for i, c in enumerate(VALID_CHARS)}
+CHAR_VOCAB_SIZE = len(CHAR_VOCABULARY)
+CHAR_VOCAB_MAPPING = {c: i for i, c in enumerate(CHAR_VOCABULARY)}
 
+NEPTUNE_API_TOKEN = os.environ['NEPTUNE_API_TOKEN']
+NEPTUNE_PROJECT_NAME = os.environ['NEPTUNE_PROJECT_NAME']
+SEED = 20200921
 
 class BookSet(Enum):
     HCM = 'HO CHI MINH'
@@ -15,11 +20,6 @@ class BookSet(Enum):
     VK_DANG = 'VK DANG'
 
 
-class SampleStrategy(Enum):
-    BY_LINE = 'BY_LINE'
-    BY_LENGTH = 'BY_LENGTH'
-
-
 class LanguageModelLevel(Enum):
-    CHAR_LEVEL = "CHAR_LEVEL"
-    WORD_LEVEL = "WORD_LEVEL"  # not available yet
+    CHAR_LEVEL = "char"
+    WORD_LEVEL = "word"  # not available yet

@@ -1,6 +1,6 @@
 from typing import Sized
 
-from constants import VALID_CHARS
+from constants import CHAR_VOCABULARY
 
 TCVN3 = ["Aµ", "A¸", "¢", "A·", "EÌ", "EÐ", "£", "I×", "IÝ", "Oß",
          "Oã", "¤", "Oâ", "Uï", "Uó", "Yý", "µ", "¸", "©", "·",
@@ -64,7 +64,7 @@ def tcnv3_to_unicode(str_original: str) -> str:
 
     new_str = ""
     for char in str_original:
-        if char in VALID_CHARS:
+        if char in CHAR_VOCABULARY:
             new_str += char
 
     return new_str

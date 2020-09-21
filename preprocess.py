@@ -4,7 +4,7 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
-from constants import PROCESSED_DATA_DIR, RAW_DATA_DIR, CHAR_MAPPING, BookSet
+from constants import PROCESSED_DATA_DIR, RAW_DATA_DIR, CHAR_VOCAB_MAPPING, BookSet
 from utils import tcnv3_to_unicode
 
 CPU_COUNT = multiprocessing.cpu_count()
@@ -90,6 +90,7 @@ def preprocess_process_file(pdf_file: str):
 
 
 def word_encoding(txt_file: str):
+    # use .word.npy
     pass
 
 
@@ -98,8 +99,8 @@ def character_encoding(txt_file: str):
     print(f"[CHAR] Character-based encoding {txt_file_name}")
     with open(txt_file) as f:
         txt = f.read()
-    arr = np.array([CHAR_MAPPING[c] for c in txt])
-    numpy_file = txt_file.replace(".txt", ".npy")
+    arr = np.array([CHAR_VOCAB_MAPPING[c] for c in txt])
+    numpy_file = txt_file.replace(".txt", ".char.npy")
     np.save(numpy_file, arr)
 
 
