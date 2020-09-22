@@ -3,8 +3,8 @@ from typing import List
 import torch
 from torch import nn, Tensor
 
-from constants import *
 from .AbstractModel import AbstractModel
+from constants import *
 
 
 class CharacterLevelGRU(AbstractModel):

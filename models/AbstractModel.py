@@ -26,11 +26,11 @@ class ConfigurableDataset(IterableDataset):
         for file in os.listdir(PROCESSED_DATA_DIR):
             for bs in book_sets:
                 if file.upper().startswith(bs.value) and file.endswith(file_extension):
-                    files.append(file)
+                    files.append(os.path.join(PROCESSED_DATA_DIR, file))
         shuffle(files)
 
         for file in files:
-            self.data += np.load(file)
+            self.data = np.concatenate([self.data, np.load(file)])
 
         self.length = math.ceil(self.data.shape[0] / (seq_len * batch_size))
 
@@ -42,8 +42,8 @@ class ConfigurableDataset(IterableDataset):
         num_samples = math.floor((len(self.data) - 1) / seq_len)
         for i in range(num_samples):
             yield (
-                torch.tensor(self.data[i * seq_len: i + seq_len]),
-                torch.tensor(self.data[i * seq_len + 1: i + seq_len + 1]),
+                torch.tensor(self.data[i * seq_len: i * seq_len + seq_len]).long().cuda(),
+                torch.tensor(self.data[i * seq_len + 1: i * seq_len + seq_len + 1]).long().cuda(),
             )
 
 

@@ -1,3 +1,5 @@
+from sys import stderr
+
 import torch
 from pytorch_lightning import Trainer as LightningTrainer
 from pytorch_lightning import seed_everything
@@ -23,7 +25,7 @@ def main():
     )
     model = CharacterLevelGRU(
         book_sets=[BookSet.HCM],
-        seq_len=64,
+        seq_len=32,
         batch_size=16,
         learning_rate=0.001,
         weight_decay=0.01,
@@ -36,7 +38,14 @@ def main():
         linear_dropout=0.1,
         linear_activation='PReLU'
     )
-    trainer.fit(model)
+    try:
+        trainer.fit(model)
+    except Exception as e:
+        print(str(e), file=stderr)
+        logger.experiment.stop(str(e))
+        exit(1)
+    else:
+        logger.experiment.stop()
 
 
 if __name__ == '__main__':

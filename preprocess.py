@@ -3,7 +3,9 @@ import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import numpy as np
+
 from constants import PROCESSED_DATA_DIR, RAW_DATA_DIR, CHAR_VOCAB_MAPPING, BookSet
 from utils import tcnv3_to_unicode
 
