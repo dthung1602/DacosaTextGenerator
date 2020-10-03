@@ -19,7 +19,7 @@ from constants import BookSet, LanguageModelLevel, PROCESSED_DATA_DIR
 class ConfigurableDataset(IterableDataset):
     def __init__(self, book_sets: List[BookSet], lm_level: LanguageModelLevel, seq_len: int, batch_size: int):
         self.seq_len = seq_len
-        self.data = np.array([])
+        self.batch_size = batch_size
 
         file_extension = f".{lm_level.value}.npy"
         files = []
@@ -29,10 +29,10 @@ class ConfigurableDataset(IterableDataset):
                     files.append(os.path.join(PROCESSED_DATA_DIR, file))
         shuffle(files)
 
-        for file in files:
-            self.data = np.concatenate([self.data, np.load(file)])
+        self.data = np.concatenate([np.load(file) for file in files])
 
-        self.length = math.ceil(self.data.shape[0] / (seq_len * batch_size))
+        self.num_samples = math.floor((len(self.data) - 1) / seq_len)
+        self.length = math.ceil(self.num_samples / batch_size)
 
     def __len__(self):
         return self.length
@@ -42,15 +42,16 @@ class ConfigurableDataset(IterableDataset):
         num_samples = math.floor((len(self.data) - 1) / seq_len)
         for i in range(num_samples):
             yield (
-                torch.tensor(self.data[i * seq_len: i * seq_len + seq_len]).long().cuda(),
-                torch.tensor(self.data[i * seq_len + 1: i * seq_len + seq_len + 1]).long().cuda(),
+                torch.tensor(self.data[i * seq_len: i * seq_len + seq_len]).long(),
+                torch.tensor(self.data[i * seq_len + 1: i * seq_len + seq_len + 1]).long(),
             )
 
 
 SAMPLE_SEED_SENTENCES = [
-    "Trong khi đó, dù đạt được những kết quả rất đáng tự hào, đất nước ta vẫn đứng trước nhiều khó khăn, thách thức",
+    "Cách mệnh An Nam cũng là một bộ phận trong cách mệnh thế giới. ",
+    "Trong khi đó, dù đạt được những kết quả rất đáng tự hào, đất nước ta vẫn đứng trước nhiều khó khăn, thách thức.",
     "Đại hội đại biểu toàn quốc lần thứ XIII của Đảng lần này diễn ra trong bối cảnh tình hình thế giới và khu vực có những diễn biến rất nhanh, phức tạp, khó dự báo.",
-    "Báo cáo chính trị là văn kiện trung tâm của Đại hội, cùng với Báo cáo tổng kết thực hiện Chiến lược phát triển kinh tế - xã hội 10 năm 2011 - 2020, xây dựng Chiến lược phát triển kinh tế - xã hội 10 năm 2021 - 2030."
+    "Báo cáo chính trị là văn kiện trung tâm của Đại hội, cùng với Báo cáo tổng kết thực hiện Chiến lược phát triển kinh tế - xã hội 10 năm 2011 - 2020, xây dựng Chiến lược phát triển kinh tế - xã hội 10 năm 2021 - 2030"
 ]
 
 
@@ -87,7 +88,7 @@ class AbstractModel(LightningModule, ABC):
 
     def training_step(self, batch: Tuple[Tensor, Tensor], batch_num: int) -> dict:
         inputs, labels = batch
-        logits = self(inputs)
+        logits = self(inputs)[0]
         loss = self.loss(logits, labels)
         return {'loss': loss}
 
@@ -95,7 +96,7 @@ class AbstractModel(LightningModule, ABC):
         for sentence in SAMPLE_SEED_SENTENCES:
             generated_sentence = self.generate(sentence, len(sentence))
             print("---------")
-            print(generated_sentence)
-            print()
+            print(f'"{generated_sentence}"')
             print("---------")
-            self.logger.experiment.log_metric("generated_sentence", generated_sentence)
+            self.logger.experiment.log_text("generated_sentence", generated_sentence)
+        return {}

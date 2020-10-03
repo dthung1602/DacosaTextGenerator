@@ -1,5 +1,3 @@
-from sys import stderr
-
 import torch
 from pytorch_lightning import Trainer as LightningTrainer
 from pytorch_lightning import seed_everything
@@ -9,7 +7,7 @@ from constants import *
 from models import CharacterLevelGRU
 
 
-def main():
+def train():
     seed_everything(SEED)
     logger = NeptuneLogger(
         api_key=NEPTUNE_API_TOKEN,
@@ -41,12 +39,11 @@ def main():
     try:
         trainer.fit(model)
     except Exception as e:
-        print(str(e), file=stderr)
         logger.experiment.stop(str(e))
-        exit(1)
+        raise e
     else:
         logger.experiment.stop()
 
 
 if __name__ == '__main__':
-    main()
+    train()

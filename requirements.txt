@@ -5,3 +5,4 @@ sklearn~=0.0
 beautifulsoup4~=4.9.1
 requests~=2.24.0
 neptune-client~=0.4.120
+tqdm~=4.49.0
