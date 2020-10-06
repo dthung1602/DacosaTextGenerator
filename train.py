@@ -4,7 +4,7 @@ from pytorch_lightning import seed_everything
 from pytorch_lightning.loggers.neptune import NeptuneLogger
 
 from constants import *
-from models import CharacterLevelGRU
+from models import CharacterLevelRNN
 
 
 def train():
@@ -16,25 +16,23 @@ def train():
     )
     trainer = LightningTrainer(
         gpus=torch.cuda.device_count(),
-        min_epochs=1,
-        max_epochs=1,
+        min_epochs=4,
+        max_epochs=4,
         reload_dataloaders_every_epoch=True,
         logger=logger
     )
-    model = CharacterLevelGRU(
+    model = CharacterLevelRNN(
         book_sets=[BookSet.HCM],
         seq_len=32,
         batch_size=16,
-        learning_rate=0.001,
+        learning_rate=0.0002,
         weight_decay=0.01,
-        embedding_dim=128,
-        gru_hidden_size=128,
-        gru_num_layers=2,
-        gru_dropout=0.1,
-        context_size=3,
-        linear_size=512,
-        linear_dropout=0.1,
-        linear_activation='PReLU'
+        embedding_dim=512,
+        rnn_variant='GRU',
+        rnn_hidden_size=512,
+        rnn_num_layers=2,
+        rnn_dropout=0.2,
+        dropout=0.2,
     )
     try:
         trainer.fit(model)

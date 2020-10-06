@@ -1,1 +1,1 @@
-from .CharacterLevelGRU import CharacterLevelGRU
+from .CharacterLevelRNN import CharacterLevelRNN
