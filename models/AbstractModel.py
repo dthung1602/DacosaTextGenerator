@@ -39,8 +39,7 @@ class ConfigurableDataset(IterableDataset):
 
     def __iter__(self) -> Iterable:
         seq_len = self.seq_len
-        num_samples = math.floor((len(self.data) - 1) / seq_len)
-        for i in range(num_samples):
+        for i in range(self.num_samples):
             yield (
                 torch.tensor(self.data[i * seq_len: i * seq_len + seq_len]).long(),
                 torch.tensor(self.data[i * seq_len + 1: i * seq_len + seq_len + 1]).long(),

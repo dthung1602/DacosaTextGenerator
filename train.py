@@ -16,24 +16,24 @@ def train():
     )
     trainer = LightningTrainer(
         gpus=torch.cuda.device_count(),
-        min_epochs=1,
-        max_epochs=1,
+        min_epochs=2,
+        max_epochs=2,
         reload_dataloaders_every_epoch=True,
         logger=logger
     )
     model = CharacterLevelGRU(
-        book_sets=[BookSet.HCM],
-        seq_len=32,
-        batch_size=16,
-        learning_rate=0.001,
-        weight_decay=0.01,
+        book_sets=[BookSet.LENIN, BookSet.HCM, BookSet.VK_DANG],
+        seq_len=128 + 32,
+        batch_size=32,
+        learning_rate=0.0001,
+        weight_decay=0.02,
         embedding_dim=128,
         gru_hidden_size=128,
         gru_num_layers=2,
-        gru_dropout=0.1,
-        context_size=3,
-        linear_size=512,
-        linear_dropout=0.1,
+        gru_dropout=0.2,
+        context_size=64,
+        linear_size=1024 + 512,
+        linear_dropout=0.2,
         linear_activation='PReLU'
     )
     try:
