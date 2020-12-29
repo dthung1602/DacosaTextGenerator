@@ -1,14 +1,16 @@
 import os
 from enum import Enum
 
-RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), "data", "raw")
-PROCESSED_DATA_DIR = os.path.join(os.path.dirname(__file__), "data", "processed")
+ROOT_DIR = os.path.dirname(__file__)
+RAW_DATA_DIR = os.path.join(ROOT_DIR, "data", "raw")
+PROCESSED_DATA_DIR = os.path.join(ROOT_DIR, "data", "processed")
 
-CHAR_VOCABULARY = " \n!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" \
-              "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộ" \
-              "ỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ–"
-CHAR_VOCAB_SIZE = len(CHAR_VOCABULARY)
-CHAR_VOCAB_MAPPING = {c: i for i, c in enumerate(CHAR_VOCABULARY)}
+AI_TEXT_GEN_VOCAB_DIR = os.path.join(ROOT_DIR, "aitextgen")
+AI_TEXT_GEN_VOCAB_FILE = os.path.join(AI_TEXT_GEN_VOCAB_DIR, "aitextgen-vocab.json")
+AI_TEXT_GEN_MERGES_FILE = os.path.join(AI_TEXT_GEN_VOCAB_DIR, "aitextgen-merges.txt")
+AI_TEXT_GEN_DATASET_DIR = os.path.join(ROOT_DIR, "data", "dataset")
+AI_TEXT_GEN_VOCAB_SIZE = 10000
+AI_TEXT_GEN_BLOCK_SIZE = 1024
 
 NEPTUNE_API_TOKEN = os.environ.get('NEPTUNE_API_TOKEN')
 NEPTUNE_PROJECT_NAME = os.environ.get('NEPTUNE_PROJECT_NAME')
@@ -18,9 +20,6 @@ SEED = 20200921
 class BookSet(Enum):
     HCM = 'HO CHI MINH'
     LENIN = 'LENIN'
+    MAC = 'CAC MAC'
     VK_DANG = 'VK DANG'
-
-
-class LanguageModelLevel(Enum):
-    CHAR_LEVEL = "char"
-    WORD_LEVEL = "word"  # not available yet
+    OTHER = 'OTHER'
